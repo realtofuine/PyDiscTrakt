@@ -57,8 +57,7 @@ if config['DEFAULT']['discord.client_id'] == "":
     config.set('DEFAULT', 'discord.client_id', client_id)
 
 
-with open('config.ini', 'w') as configfile:
-    config.write(configfile)
+config.write(os.path.join(CWD, "config.ini"))
 
 trakt.core.OAUTH_TOKEN = config['DEFAULT']['trakt.OAUTH_TOKEN']
 trakt.core.CLIENT_ID = config['DEFAULT']['trakt.CLIENT_ID']
