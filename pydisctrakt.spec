@@ -21,7 +21,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='exefilename',
+    name='pydisctrakt',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

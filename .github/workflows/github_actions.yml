@@ -20,7 +20,9 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: traktdiscord-win
-          path: dist
+          path: |
+            dist/pydisctrakt.exe
+            dist/config.ini
   build_macos:
     runs-on: macos-latest
     steps:
@@ -31,12 +33,13 @@ jobs:
           pip install -r requirements.txt
           pyinstaller --clean pydisctrakt.spec -y
 
-      - name: See files
+      - name: Make file executable
         run: |
-          ls
           cd dist
-          ls
+          chmod +x pydisctrakt
       - uses: actions/upload-artifact@v3
         with:
           name: traktdiscord-macos
-          path: dist
+          path: |
+            dist/pydisctrakt
+            dist/config.ini
