@@ -1,0 +1,3 @@
+([('exefilename',
+   '/Users/rishi/TraktDiscoPublic/dist/exefilename',
+   'EXECUTABLE')],)
