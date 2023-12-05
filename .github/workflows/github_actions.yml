@@ -2,12 +2,12 @@ name: Build
 on: [push]
 
 jobs:
-  build_windows:
+  build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Package Windows exe
+      - name: Package builds
         run: |
           pip install -r requirements.txt
           pyinstaller --clean pydisctrakt.spec
@@ -19,27 +19,8 @@ jobs:
           ls
       - uses: actions/upload-artifact@v3
         with:
-          name: traktdiscord-win
+          name: traktdiscord
           path: |
             dist/pydisctrakt.exe
-            dist/config.ini
-  build_macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Package Unix exec
-        run: |
-          pip install -r requirements.txt
-          pyinstaller --clean pydisctrakt.spec -y
-
-      - name: Make file executable
-        run: |
-          cd dist
-          chmod +x pydisctrakt
-      - uses: actions/upload-artifact@v3
-        with:
-          name: traktdiscord-macos
-          path: |
             dist/pydisctrakt
             dist/config.ini
