@@ -1,4 +1,4 @@
-# pyinstaller --clean exefilename.spec --noconfirm
+# pyinstaller --clean pydisctrakt.spec
 
 import configparser
 import json
@@ -30,12 +30,12 @@ if config['DEFAULT']['trakt.USERNAME'] == "":
     config.set('DEFAULT', 'trakt.USERNAME', str(username))
 
 if config['DEFAULT']['trakt.CLIENT_ID'] == "":
-    print("If you do not have a client ID and secret. Please visit the following url to create them. http://trakt.tv/oauth/applications")
+    print("If you do not have a client ID and secret, please visit the following url to create them. http://trakt.tv/oauth/applications")
     client_id = input("Enter your trakt client id: ")
     config.set('DEFAULT', 'trakt.CLIENT_ID', str(client_id))
 
 if config['DEFAULT']['trakt.CLIENT_SECRET'] == "":
-    print("If you do not have a client ID and secret. Please visit the following url to create them. http://trakt.tv/oauth/applications")
+    print("If you do not have a client ID and secret, please visit the following url to create them. http://trakt.tv/oauth/applications")
     client_secret = input("Enter your trakt client secret: ")
     config.set('DEFAULT', 'trakt.CLIENT_SECRET', str(client_secret))
 
@@ -45,13 +45,13 @@ if config['DEFAULT']['trakt.OAUTH_TOKEN'] == "":
     config.set('DEFAULT', 'trakt.OAUTH_TOKEN', oauth)
 
 if config['DEFAULT']['tmdb.api_key'] == "":
-    print("If you do not have a TMDB api key. Please visit the following url to create one. https://www.themoviedb.org/settings/api")
+    print("If you do not have a TMDB api key, please visit the following url to create one. https://www.themoviedb.org/settings/api")
     api_key = input("Enter your TMDB api key: ")
 
     config.set('DEFAULT', 'tmdb.api_key', api_key)
 
 if config['DEFAULT']['discord.client_id'] == "":
-    print("If you do not have a Discord client ID. Please visit the following url to create one. https://discord.com/developers/applications")
+    print("If you do not have a Discord client ID, please visit the following url to create one. https://discord.com/developers/applications")
     client_id = input("Enter your Discord client ID: ")
 
     config.set('DEFAULT', 'discord.client_id', client_id)
@@ -73,7 +73,16 @@ print(my)
 
 RPC = Presence(config['DEFAULT']['discord.client_id'])
 
-RPC.connect() # Start the handshake loop
+while True:
+    try:
+        RPC.connect() # Start the handshake loop
+    except:
+        print("Error connecting to Discord. Retrying in 5 seconds...")
+        time.sleep(5)
+        continue
+    else:
+        break
+
 print(RPC.update(state="Started", details="Started!", large_image="movies"))  # Set the presence
 
 currentTime = time.time()

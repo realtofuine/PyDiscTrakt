@@ -1,0 +1,46 @@
+name: Build
+on: [push]
+
+jobs:
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Package Windows exe
+        run: |
+          pip install -r requirements.txt
+          pyinstaller --clean pydisctrakt.spec
+
+      - name: See files
+        run: |
+          ls
+          cd src
+          ls
+          cd dist
+          ls
+      - uses: actions/upload-artifact@v3
+        with:
+          name: traktdiscord-win
+          path: dist
+  build_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Package Unix exec
+        run: |
+          pip install -r requirements.txt
+          pyinstaller --clean pydisctrakt.spec
+
+      - name: See files
+        run: |
+          ls
+          cd src
+          ls
+          cd dist
+          ls
+      - uses: actions/upload-artifact@v3
+        with:
+          name: traktdiscord-unix
+          path: dist
