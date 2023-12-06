@@ -42,4 +42,5 @@ jobs:
           name: traktdiscord-macos
           path: |
             dist/pydisctrakt
+            dist/pydisctrakt.app
             dist/config.ini
