@@ -10,7 +10,7 @@ jobs:
       - name: Package builds
         run: |
           pip install -r requirements.txt
-          pyinstaller --clean --console pydisctrakt.spec
+          pyinstaller --clean pydisctrakt.spec
 
       - name: See files
         run: |
@@ -31,7 +31,7 @@ jobs:
       - name: Package Unix exec
         run: |
           pip install -r requirements.txt
-          pyinstaller --clean --console pydisctrakt.spec -y
+          pyinstaller --clean pydisctrakt.spec -y
       - name: See files
         run: |
           ls
