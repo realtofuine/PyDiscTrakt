@@ -95,12 +95,21 @@ while(True):
         currentTime = time.time()
         time.sleep(5)
     elif isinstance(show, TVEpisode):
-        movie = tmdb.TV(tmdb.Find(show.ids['ids']['imdb']).info(external_source='imdb_id')['tv_episode_results'][0]['show_id'])
+        if(tmdb.TV(tmdb.Find(show.ids['ids']['imdb']).info == "None")):
+            movie = tmdb.TV(tmdb.Search().tv(query=show.show)['results'][0]['id'])
+        else:
+            movie = tmdb.TV(tmdb.Find(show.ids['ids']['imdb']).info(external_source='imdb_id')['tv_episode_results'][0]['show_id'])
+
         movie.info()
         dets = movie.info()['name']
         url = "https://image.tmdb.org/t/p/w780" + movie.info()['backdrop_path']
         title = str(show)[13 + len(dets):]
-        imdburl = "https://imdb.com/title/" + show.ids['ids']['imdb']
+
+        if show.ids['ids']['imdb'] is None:
+            imdburl = "https://imdb.com"
+        else:
+            imdburl = "https://imdb.com/title/" + show.ids['ids']['imdb']
+            
         print(RPC.update(state=title, details=dets, large_image=url, small_image="trakt", start = currentTime, buttons = [{"label": "IMDB", "url": imdburl}]))
         time.sleep(5)
     elif isinstance(show, Movie):
