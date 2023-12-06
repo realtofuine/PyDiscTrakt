@@ -37,7 +37,7 @@ exe = EXE(
 )
 app = BUNDLE(
     exe,
-    name='traktdiscord.app',
+    name='pydisctrakt.app',
     icon=None,
     bundle_identifier=None,
 )
