@@ -1,11 +1,14 @@
 # pyinstaller --clean pydisctrakt.spec
 
+import calendar
 import configparser
 import json
 import os.path
 import sys
 import time
+from datetime import datetime
 
+import requests
 import tmdbsimple as tmdb
 import trakt
 import trakt.core
@@ -14,6 +17,11 @@ from trakt import init
 from trakt.movies import Movie
 from trakt.tv import TVEpisode, TVShow
 from trakt.users import User
+
+
+def UTC_time_to_epoch(timestamp):
+  epoch = calendar.timegm(timestamp.utctimetuple())
+  return epoch
 
 config = configparser.ConfigParser()
 
@@ -67,6 +75,9 @@ trakt.core.CLIENT_SECRET= config['DEFAULT']['trakt.CLIENT_SECRET']
 tmdb.API_KEY= config['DEFAULT']['tmdb.api_key']
 tmdb.REQUESTS_TIMEOUT = 15
 
+s = requests.Session()
+s.headers.update({'content-type': 'application/json', 'trakt-api-key': config['DEFAULT']['trakt.CLIENT_ID'], 'trakt-api-version': '2', 'Authorization' : 'Bearer ' + config['DEFAULT']['trakt.OAUTH_TOKEN']})
+
 my = User(config['DEFAULT']['trakt.USERNAME'])
 
 print(my)
@@ -87,14 +98,16 @@ print(RPC.update(state="Started", details="Started!", large_image="movies"))  # 
 
 currentTime = time.time()
 while(True):
+    response = s.get("https://api.trakt.tv/users/" + config['DEFAULT']['trakt.USERNAME'] + "/watching")
 
     show = my.watching
-    if(show is None):
+    if(response.status_code == 204):
         print("None")
         RPC.clear()
-        currentTime = time.time()
         time.sleep(5)
     elif isinstance(show, TVEpisode):
+        endTime = UTC_time_to_epoch(datetime.strptime(response.json()['expires_at'], '%Y-%m-%dT%H:%M:%S.%fZ'))
+
         if(tmdb.TV(tmdb.Find(show.ids['ids']['imdb']).info == "None")):
             movie = tmdb.TV(tmdb.Search().tv(query=show.show)['results'][0]['id'])
         else:
@@ -110,14 +123,15 @@ while(True):
         else:
             imdburl = "https://imdb.com/title/" + show.ids['ids']['imdb']
             
-        print(RPC.update(state=title, details=dets, large_image=url, small_image="trakt", start = currentTime, buttons = [{"label": "IMDB", "url": imdburl}]))
+        print(RPC.update(state=title, details=dets, large_image=url, small_image="trakt", end = endTime, buttons = [{"label": "IMDB", "url": imdburl}]))
         time.sleep(5)
     elif isinstance(show, Movie):
+        endTime = UTC_time_to_epoch(datetime.strptime(response.json()['expires_at'], '%Y-%m-%dT%H:%M:%S.%fZ'))
         movie = tmdb.Movies(show.to_json()['movies'][0]['ids']['tmdb'])
         movie.info()
         imdburl = "https://imdb.com/title/" + movie.info()['imdb_id']
         url = "https://image.tmdb.org/t/p/w780" + movie.info()['backdrop_path']
-        print(RPC.update(details=movie.title, state="Rating: " + str(show.ratings['rating']) + " ⭐", large_image=url, small_image="trakt", start = currentTime, buttons = [{"label": "IMDB", "url": imdburl}]))
+        print(RPC.update(details=movie.title, state="Rating: " + str(show.ratings['rating']) + " ⭐", large_image=url, small_image="trakt", end = endTime, buttons = [{"label": "IMDB", "url": imdburl}]))
         time.sleep(5)
     else:
         RPC.clear()
