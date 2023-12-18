@@ -17,7 +17,7 @@ jobs:
           ls
           cd dist
           ls
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: traktdiscord-win
           path: |
@@ -37,7 +37,7 @@ jobs:
           ls
           cd dist
           ls
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: traktdiscord-macos
           path: |
