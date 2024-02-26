@@ -1,5 +1,5 @@
 trakt==3.4.0
-pytrakt==3.4.26
+pytrakt==3.4.30
 tmdbsimple==2.9.1
 pypresence==4.3.0
 pyinstaller==6.3.0
